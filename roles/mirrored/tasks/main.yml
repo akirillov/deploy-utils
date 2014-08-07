@@ -1,0 +1,18 @@
+---
+
+- name: Clear sources.list for internal LAN servers
+  action: shell > /etc/apt/sources.list
+  when: server_type == "internal"
+
+
+- name: Add Internal APT Repository
+  apt_repository: repo='deb [arch=amd64] ftp://{{ repo_url }}/ubuntu/ {{ ubuntu_release }} main' state=present
+#
+#- name: Add Internal APT Repository [universe]
+#  apt_repository: repo='deb [arch=amd64] ftp://{{ repo_url }}/ubuntu/ {{ ubuntu_release }} universe' state=present
+#
+#- name: Add Internal APT Repository [main restricted]
+#  apt_repository: repo='deb [arch=amd64] ftp://{{ repo_url }}/ubuntu/ {{ ubuntu_release }} main restricted' state=present
+#
+#- name: Add Internal APT Repository [multiverse]
+#  apt_repository: repo='deb [arch=amd64] ftp://{{ repo_url }}/ubuntu/ {{ ubuntu_release }} multiverse' state=present

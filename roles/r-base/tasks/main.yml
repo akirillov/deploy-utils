@@ -1,0 +1,30 @@
+#- name: Add CRAN Repository Key
+#  apt_key: id=E084DAB9 keyserver=keyserver.ubuntu.com state=present
+
+- name: Add CRAN Repository
+  action: apt_repository repo='ppa:marutter/rrutter'
+
+#- name: Add CRAN Repository
+#  apt_repository: repo='deb http://cran.r-project.org/bin/linux/ubuntu precise main' state=present
+
+- name: Installation of R-base
+  apt: name={{ item  }} state=present update_cache=yes
+  with_items:
+    - r-base
+    - r-base-core
+    - r-cran-rjava
+#    - r-cran-boot
+#    - r-cran-class
+#    - r-cran-cluster
+#    - r-cran-codetools
+#    - r-cran-foreign
+#    - r-cran-kernsmooth
+#    - r-cran-lattice
+#    - r-cran-mass
+#    - r-cran-matrix
+#    - r-cran-mgcv
+#    - r-cran-nlme
+#    - r-cran-nnet
+#    - r-cran-rpart
+#    - r-cran-spatial
+#    - r-cran-survival

@@ -1,0 +1,11 @@
+#- name: Installing rJava package to R
+#  action: shell R CMD install rJava
+#
+#- name: Configuring R JRE
+#  action: shell R CMD javareconf
+
+- name: Cloning SparkR
+  git: repo=git://github.com/amplab-extras/SparkR-pkg.git dest=/opt/sparkR update=yes accept_hostkey=yes
+
+- name: Installing SparkR
+  action: shell cd /opt/sparkR; sudo SPARK_HADOOP_VERSION={{ spark_hadoop_version }} ./install-dev.sh

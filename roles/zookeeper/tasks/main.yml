@@ -1,0 +1,32 @@
+---
+
+- name: Installation of Zookeeper Binaries
+  apt: name={{ item  }} state=present update_cache=yes
+  with_items:
+    - zookeeper
+    - zookeeper-bin
+    - zookeeperd
+
+
+- name: Delete zookeeper configuration
+  file: path=/etc/zookeeper/conf/zoo.cfg state=absent
+
+- name: Delete zookeeper myid file
+  file: path=/etc/zookeeper/conf/myid state=absent
+
+- name: Create zookeeper config file
+  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg
+
+- name: Create zookeeper myid file
+  template: src=zoo_id.j2 dest=/etc/zookeeper/conf/myid
+  notify:
+    - Restart Zookeeper
+
+- name: Download ZK tar
+  get_url: url=http://apache-mirror.rbc.ru/pub/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz dest=~/zookeeper-3.4.6.tar.gz
+
+- name: Unpack ZK tar
+  action: shell tar -xzf ~/zookeeper-3.4.6.tar.gz
+
+- name: Add to PATH
+  action: shell export PATH=$PATH:~/zookeeper-3.4.6/bin

@@ -1,0 +1,21 @@
+---
+## i.e. upgrade mesos, templates stay the same...
+#- name: Restart mesos-master
+#  service: name=mesos-master state=restarted enabled=yes sleep=5
+#  # when: mesos_install_mode == "master"
+#
+#- name: Restart mesos-slave
+#  service: name=mesos-slave state=restarted enabled=yes sleep=5
+#  # when: mesos_install_mode == "slave"
+
+# Starting Mesos and Marathon
+- name: Start Mesos Master
+  action: shell sudo /usr/bin/mesos-init-wrapper master &
+  when: mesos_install_mode == "master"
+
+- name: Start Mesos Slave
+  action: shell sudo /usr/bin/mesos-init-wrapper slave &
+  when: mesos_install_mode == "slave"
+
+- name: Restart Marathon
+  service: name=marathon state=restarted enabled=yes sleep=5

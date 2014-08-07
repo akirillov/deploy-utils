@@ -1,0 +1,12 @@
+CLUSTER={{ mesos_cluster_name }}
+IP={{ ansible_default_ipv4.address }}
+LOGS={{ mesos_log_location }}
+ULIMIT="{{ mesos_ulimit }}"
+ZK="{{ mesos_zookeeper }}"
+MASTER="{{ mesos_zookeeper_masters }}"
+OPTS="{{ mesos_options }}"
+WORK_DIR="{{ work_dir }}"
+QUORUM="{{ quorum }}"
+ISOLATION="{{ isolation }}"
+CONTAINERIZER_PATH="{{ containerizer_path }}"
+MESOS_HOSTNAME="{{ mesos_hostname }}"

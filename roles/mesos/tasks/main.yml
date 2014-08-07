@@ -1,0 +1,51 @@
+---
+- name: Add mesosphere repository key
+  apt_key: id=E56151BF keyserver=keyserver.ubuntu.com state=present
+
+- name: Add mesosphere repository
+  apt_repository: repo='deb http://repos.mesosphere.io/ubuntu trusty main' state=present
+
+- name: Installation of Mesos
+  apt: name=mesos state=present update_cache=yes
+
+- name: Installation of Marathon
+  apt: name=marathon state=present
+  when: mesos_install_mode == "master"
+
+# ==  Config scripts: Delete and recreate
+- name: Delete mesos zk config
+  file: path=/etc/mesos/ state=absent 
+  
+- name: Delete mesos-master defaults
+  file: path=/etc/defaults/mesos-master state=absent 
+
+- name: Delete mesos-slave defaults 
+  file: path=/etc/defaults/mesos-slave state=absent 
+
+- name: Delete mesos config 
+  file: path=/etc/default/mesos.conf state=absent
+  when: mesos_install_mode == "master"
+
+- name: Delete mesos-master init script
+  file: path=/etc/init/mesos-master.conf state=absent
+  when: mesos_install_mode == "master"
+
+- name: Delete mesos-slave init script
+  file: path=/etc/init/mesos-slave.conf state=absent
+  when: mesos_install_mode == "slave"
+
+# == Configure and recreate
+- name: Mesos default config file
+  template: src=mesos.j2 dest=/etc/default/mesos
+
+- name: Mesos master script
+  template: src=mesos-master.j2 dest=/etc/init/mesos-master.conf
+  when: mesos_install_mode == "master"
+  notify:
+    - Restart mesos-master
+
+- name: Mesos slave script
+  template: src=mesos-slave.j2 dest=/etc/init/mesos-slave.conf
+  when: mesos_install_mode == "slave"
+  notify:
+    - Restart mesos-slave
