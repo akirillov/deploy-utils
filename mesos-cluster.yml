@@ -3,13 +3,22 @@
 - hosts: all
   sudo: True
   roles:
-#    - role: common
-#    - role: oracle-java
-#    - role: scala
-#    - role: sbt
-    - role: mesos
+    - role: common
+    - role: oracle-java
+    - role: scala
+    - role: sbt
 
+- hosts: zookeeper
+  sudo: True
+  roles:
+    - role: zookeeper
 
-# sudo /usr/local/sbin/mesos-master --work_dir=/var/lib/mesos --registry=in_memory -zk=`cat /etc/mesos/zk` --ip=2.168.11.100
+- hosts: mesos_masters
+  sudo: True
+  roles:
+    - { role: mesos, mesos_install_mode: "master", eth: "eth1"}
 
-#sudo /usr/local/sbin/mesos-slave --work_dir=/var/lib/mesos --master=zk://192.168.11.100:2181,192.168.11.110:21,192.168.11.111:2181/mesos --ip=192.168.11.110
+- hosts: mesos_workers
+  sudo: True
+  roles:
+    - { role: mesos, mesos_install_mode: "slave", eth: "eth1" }

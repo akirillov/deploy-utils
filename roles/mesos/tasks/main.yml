@@ -1,8 +1,73 @@
 # https://mesosphere.io/docs/getting-started/debian-install/
 
-- include: zookeeper.yml
-  when: mesos_install_mode == "master" or mesos_install_mode == "mixed"
+- name: Add mesosphere repository key
+  apt_key: id=E56151BF keyserver=keyserver.ubuntu.com state=present
 
-- debug: var=group
+- name: Add mesosphere repository
+  apt_repository: repo='deb http://repos.mesosphere.io/ubuntu trusty main' state=present
 
-#- include: mesos.yml
+- name: Installation of Mesos
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+    - mesos
+    - marathon
+
+- name: Create Mesos workdir
+  action: shell mkdir -p /var/lib/mesos
+
+- name: Delete mesos config
+  file: path={{ item }} state=absent
+  with_items:
+    - /etc/default/mesos
+    - /etc/default/mesos-master
+    - /etc/mesos-master/hostname
+    - /tmp/mesos/meta
+  when: mesos_install_mode == "master"
+
+- name: Delete mesos config
+  file: path={{ item }} state=absent
+  with_items:
+    - /etc/default/mesos-slave
+    - /etc/mesos-slave/hostname
+  when: mesos_install_mode == "slave"
+
+- name: Mesos Default Configuration
+  template: src=mesos.j2 dest=/etc/default/mesos
+
+- name: Mesos Master Configuration
+  template: src=mesos-master.j2 dest={{ mesos_master_config }}
+  when: mesos_install_mode == "master"
+
+- name: Mesos Slave Configuration
+  template: src=mesos-slave.j2 dest={{ mesos_slave_config }}
+  when: mesos_install_mode == "slave"
+
+- name: Init script patch
+  template: src=quorum.j2 dest=/etc/mesos-master/quorum
+  when: mesos_install_mode == "master"
+
+#this is actually workaround for ansible inability to handle eth1 interface
+- name: Copying utility for node IP registration
+  template: src=register_ip.sh.j2 dest=/tmp/register_ip.sh mode=755
+
+- name: Registering host external IP in Mesos
+  action: shell /tmp/register_ip.sh
+
+- name: Mesos ZK Configuration
+  template: src=zk.j2 dest=/etc/mesos/zk
+#  notify:
+#    - restart mesos-master
+#    - restart mesos-slave
+#    - restart marathon
+
+- name: restart mesos-master
+  action: shell sudo service mesos-master restart
+  when: mesos_install_mode == "master"
+
+- name: restart mesos-slave
+  action: shell sudo service mesos-slave restart
+  when: mesos_install_mode == "slave"
+
+- name: restart marathon
+  action: shell sudo service marathon restart
+  when: mesos_install_mode == "master"

@@ -1,4 +1,0 @@
-zk=zk://{% for z in groups['zookeeper'] %}
-        {{ hostvars[z][service_interface].ipv4.address }}:{{ zk_client_port
-        }}{% if not loop.last %},{% endif %}
-        {% endfor %}/mesos

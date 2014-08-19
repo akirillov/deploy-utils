@@ -1,8 +1,0 @@
----
-- name: ZooKeeper ID configuration
-  template: src=zoo_id.j2 dest=/etc/zookeeper/conf/myid
-
-- name: ZooKeeper Config file
-  template: src=zoo.cfg.j2 dest=/etc/zookeeper/conf/zoo.cfg
-  notify:
-    - restart zookeeper

@@ -1,8 +1,4 @@
 ---
-- name: Restart Zookeeper
-  service: name=zookeeper state=restarted enabled=yes sleep=5
-  sudo: yes
-
-- name: Restart zookeeper
-  shell: start zookeeper || restart zookeeper
-  sudo: yes
+- name: restart zookeeper
+  action: shell service zookeeper restart
+  sudo: True

@@ -1,8 +1,3 @@
-zoo1: "192.168.99.100"
-zoo2: "192.168.99.10"
-zoo3: "192.168.99.11"
-
-quorum: "2"
-zookeeper_leader_port: 2888
-zookeeper_election_port: 3888
-zookeeper_client_port: 2181
+zk_client_port: "2181"
+zk_leader_port: "2888"
+zk_election_port: "3888"

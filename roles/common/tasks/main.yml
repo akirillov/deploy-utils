@@ -8,3 +8,4 @@
     - maven
     - wget
     - curl
+    - python-software-properties

@@ -1,15 +1,12 @@
 ---
 - name: restart mesos-master
   service: name=mesos-master state=restarted
-  when: mesos_install_mode == "master" or mesos_install_mode == "mixed"
+  when: mesos_install_mode == "master"
 
 - name: restart mesos-slave
   service: name=mesos-slave state=restarted
-  when: mesos_install_mode == "slave" or mesos_install_mode == "mixed"
+  when: mesos_install_mode == "slave"
 
 - name: restart marathon
   service: name=marathon state=restarted
-  when: mesos_install_mode == "master" or mesos_install_mode == "mixed"
-
-- name: restart zookeeper
-  action: shell service zookeeper restart
+  when: mesos_install_mode == "master"

@@ -6,17 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  base_box = "mesos"
-
-
-  # config.vm.define :master do |master|
-  #   master.vm.box = base_box
-  #   master.vm.network :private_network, ip: "192.168.11.100"
-  #   master.vm.hostname = "mesos-master"
-  #   master.vm.provider :virtualbox do |vb|
-  #     vb.customize ["modifyvm", :id, "--memory", "2096"]
-  #   end
-  # end
+  base_box = "mesos_ready"
 
   masters = [:master0,:master1,:master2]
   k = 0
