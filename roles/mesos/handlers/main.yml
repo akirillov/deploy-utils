@@ -1,13 +1,15 @@
 ---
-# i.e. upgrade mesos, templates stay the same...
-- name: Restart mesos-master
-  shell: start mesos-master || restart mesos-master
-  sudo: yes
+- name: restart mesos-master
+  service: name=mesos-master state=restarted
+  when: mesos_install_mode == "master" or mesos_install_mode == "mixed"
 
-- name: Restart mesos-slave 
-  shell: start mesos-slave || restart mesos-slave
-  sudo: yes
+- name: restart mesos-slave
+  service: name=mesos-slave state=restarted
+  when: mesos_install_mode == "slave" or mesos_install_mode == "mixed"
 
-#- name: Restart zookeeper
-#  shell: start zookeeper || restart zookeeper
-#  sudo: yes
+- name: restart marathon
+  service: name=marathon state=restarted
+  when: mesos_install_mode == "master" or mesos_install_mode == "mixed"
+
+- name: restart zookeeper
+  action: shell service zookeeper restart

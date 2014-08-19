@@ -6,14 +6,43 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  base_box = "precise64_2"
+  base_box = "mesos"
 
-  config.vm.define :master do |master|
-    master.vm.box = base_box
-    master.vm.network :private_network, ip: "192.168.100.13"
-    master.vm.hostname = "master"
-    master.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "2048"]
+
+  # config.vm.define :master do |master|
+  #   master.vm.box = base_box
+  #   master.vm.network :private_network, ip: "192.168.11.100"
+  #   master.vm.hostname = "mesos-master"
+  #   master.vm.provider :virtualbox do |vb|
+  #     vb.customize ["modifyvm", :id, "--memory", "2096"]
+  #   end
+  # end
+
+  masters = [:master0,:master1,:master2]
+  k = 0
+  masters.each_with_index do |node, index|
+    config.vm.define node do |node|
+      ip = k + index
+      node.vm.box = base_box
+      node.vm.network :private_network, ip: "192.168.11.10#{ip}"
+      node.vm.hostname = "master-#{index}"
+      node.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "2048"]
+      end
+    end
+  end
+
+  nodes = [:node0,:node1]
+  i = 110
+  nodes.each_with_index do |node, index|
+    config.vm.define node do |node|
+      ip = i + index
+      node.vm.box = base_box
+      node.vm.network :private_network, ip: "192.168.11.#{ip}"
+      node.vm.hostname = "node-#{index}"
+      node.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "3072"]
+      end
     end
   end
 end

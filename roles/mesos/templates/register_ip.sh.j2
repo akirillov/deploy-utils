@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# setting ip of specified by user network interface to mesos
+
+/sbin/ifconfig {{ eth }} | grep 'inet addr:' | cut -d: -f2 | awk '{ print "IP="$1}' >> {{ mesos_default_config }}
+/sbin/ifconfig {{ eth }} | grep 'inet addr:' | cut -d: -f2 | awk '{ print "IP="$1}' >> {{ mesos_master_config }}
+/sbin/ifconfig {{ eth }} | grep 'inet addr:' | cut -d: -f2 | awk '{ print "IP="$1}' >> {{ mesos_slave_config }}
+
+/sbin/ifconfig {{ eth }} | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}' >> {{ mesos_slave_hostname }}
+
+/sbin/ifconfig {{ eth }} | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}' >> {{ mesos_master_hostname }}

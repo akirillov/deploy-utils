@@ -1,11 +1,54 @@
-#- name: Installing rJava package to R
-#  action: shell R CMD install rJava
-#
-#- name: Configuring R JRE
-#  action: shell R CMD javareconf
+- name: Add CRAN Repository
+  action: apt_repository repo='ppa:marutter/rrutter'
+
+
+- name: Installation of R-base
+  apt: name={{ item  }} state=present update_cache=yes install_recommends=yes
+  with_items:
+    - r-base
+    - r-cran-rjava
+
+- name: Configuring R JRE
+  action: shell R CMD javareconf
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+
+
+- name: Conficuring Rprofile.site
+  template: src=Rprofile.site dest=/etc/R/Rprofile.site
+
+- name: Removing previous locks
+  action: shell rm -rf /usr/local/lib/R/site-library/*LOCK*
+
+
+- name: R packages installation script
+  template: src=install_r_packages.r.j2 dest=/tmp/install_r_packages.r
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+
+
+- name: Run install_r_packages.r
+  shell: R CMD BATCH /tmp/install_r_packages.r
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+
+- name: Remove old installation
+  action: shell rm -rf /opt/sparkR
 
 - name: Cloning SparkR
   git: repo=git://github.com/amplab-extras/SparkR-pkg.git dest=/opt/sparkR update=yes accept_hostkey=yes
 
+- name: Replace Spark version
+  replace: dest=/opt/sparkR/pkg/src/build.sbt regexp='0.9.0-incubating' replace='1.0.0-cdh5.1.0'
+
+- name: Removing previous locks
+  action: shell rm -rf /opt/sparkR/lib/*LOCK*
+
 - name: Installing SparkR
-  action: shell cd /opt/sparkR; sudo SPARK_HADOOP_VERSION={{ spark_hadoop_version }} ./install-dev.sh
+  action: shell cd /opt/sparkR; ./install-dev.sh
+  environment:
+    JAVA_HOME: "{{ java_home }}"
+    SPARK_HADOOP_VERSION: "{{ spark_hadoop_version }}"
+
+- name: Setting PATH
+  action: shell export PATH=$PATH:/opt/sparkR

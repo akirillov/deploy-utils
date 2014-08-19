@@ -1,1 +1,2 @@
-spark_hadoop_version: "2.3.0-cdh5.1.0"
+spark_hadoop_version: 2.3.0-cdh5.1.0
+java_home: /usr/lib/jvm/java-7-oracle-amd64/jre

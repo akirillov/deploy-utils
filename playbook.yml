@@ -1,9 +1,0 @@
----
-
-- hosts: all
-  sudo: True
-  roles:
-    - role: common
-    - role: scala
-    - role: r-base
-    - role: spark-r
