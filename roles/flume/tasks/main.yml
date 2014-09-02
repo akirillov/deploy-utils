@@ -1,0 +1,24 @@
+- name: Creating Flume Directory
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ flume_install_dir }}"
+    - /tmp/flume-ng
+
+#It is better to use wget in case of clusters having access to Internet
+- name: Copying TAR archive
+  copy: src=apache-flume-1.5.0-bin.tar.gz dest=/tmp
+
+- name: Extracting
+  action: shell tar -xzvf /tmp/apache-flume-1.5.0-bin.tar.gz
+
+- name: Copying extracted archive
+  action: shell cp -R apache-flume-1.5.0-bin/* {{ flume_install_dir }}
+
+- name: Copy flume.conf
+  template: src=flume.conf.j2 dest={{ flume_install_dir }}/conf/flume.conf
+
+- name: Copy flume-env.sh
+  template: src=flume-env.sh.j2 dest={{ flume_install_dir }}/conf/flume-env.sh
+
+
+# Flume node configuration could be found around https://github.com/danielpoe/cloudera/blob/master/templates/default/upstart-flume.erb

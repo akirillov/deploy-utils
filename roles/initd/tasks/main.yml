@@ -1,0 +1,8 @@
+- name: Copying Upstart Template
+  template: src=upstart.template.conf.j2 dest=/etc/init/{{ service_name }}.conf
+
+- name: Initialization of upstart service
+  action: shell initctl reload-configuration
+
+- name: Starting service
+  service: name={{ service_name }} state=started

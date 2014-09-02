@@ -1,0 +1,29 @@
+description "flume service"
+
+# used to be: start on startup
+# until we found some mounts weren't ready yet while booting:
+start on started mountall
+stop on shutdown
+
+# Automatically Respawn:
+respawn
+respawn limit 99 5
+
+script
+    echo $$ > /var/run/{{ service_name }}.pid
+
+    #no exec here because flume-ng runner invokes it by itself
+    #exec sudo {{ path_to_executable }} {{ executable_args }} >> /var/log/{{ service_name }}.log 2>&1
+
+    {{ path_to_executable }} {{ executable_args }} >> /var/log/{{ service_name }}.log 2>&1
+end script
+
+pre-start script
+    # Date format same as (new Date()).toISOString() for consistency
+    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Starting" >> /var/log/{{ service_name }}.log
+end script
+
+pre-stop script
+    rm /var/run/{{ service_name }}.pid
+    echo "[`date -u +%Y-%m-%dT%T.%3NZ`] (sys) Stopping" >> /var/log/{{ service_name }}.log
+end script

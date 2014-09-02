@@ -1,0 +1,7 @@
+---
+
+- hosts: all
+  sudo: True
+  roles:
+    - role: flume
+    - { role: initd, service_name: "flume-ng-agent", path_to_executable: "/usr/local/lib/flume-ng/bin/flume-ng", executable_args: "agent -c /usr/local/lib/flume-ng/conf -f /usr/local/lib/flume-ng/conf/flume.conf -n agent" }
