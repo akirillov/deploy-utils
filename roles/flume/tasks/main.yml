@@ -22,3 +22,4 @@
 
 
 # Flume node configuration could be found around https://github.com/danielpoe/cloudera/blob/master/templates/default/upstart-flume.erb
+# Cluster Setup http://ankitasblogger.blogspot.ru/2011/05/installing-flume-in-cluster-complete.html

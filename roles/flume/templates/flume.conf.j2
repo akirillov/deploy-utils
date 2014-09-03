@@ -1,28 +1,32 @@
-# The configuration file needs to define the sources,
-# the channels and the sinks.
-# Sources, channels and sinks are defined per agent,
-# in this case called 'agent'
+#Example of flume.conf for http source and hdfs sink
+#Json input and avro output
 
-agent.sources = seqGenSrc
-agent.channels = memoryChannel
-agent.sinks = loggerSink
+# Sources, channels, and sinks are defined per
+# agent name, in this case 'httptoavro'.
+httptoavro.sources  = source1
+httptoavro.channels = channel1
+httptoavro.sinks    = sink1
 
-# For each one of the sources, the type is defined
-agent.sources.seqGenSrc.type = seq
+# For each source, channel, and sink, set
+# standard properties.
+httptoavro.sources.source1.type     = http
+httptoavro.sources.source1.bind     = localhost
+httptoavro.sources.source1.port     = 9999
+httptoavro.sources.source1.channels = channel1
+httptoavro.sources.source1.deserializer.schemaType = LITERAL
+httptoavro.channels.channel1.type   = memory
+httptoavro.channels.channel1.capacity = 10000
 
-# The channel can be defined as follows.
-agent.sources.seqGenSrc.channels = memoryChannel
-
-# Each sink's type must be defined
-agent.sinks.loggerSink.type = logger
-
-#Specify the channel the sink should use
-agent.sinks.loggerSink.channel = memoryChannel
-
-# Each channel's type is defined.
-agent.channels.memoryChannel.type = memory
-
-# Other config values specific to each type of channel(sink or source)
-# can be defined as well
-# In this case, it specifies the capacity of the memory channel
-agent.channels.memoryChannel.capacity = 100
+httptoavro.sinks.sink1.type = hdfs
+httptoavro.sinks.sink1.channel = channel1
+httptoavro.sinks.sink1.hdfs.path = /user/flume/weblogs
+httptoavro.sinks.sink1.hdfs.inUsePrefix = .
+httptoavro.sinks.sink1.hdfs.fileSuffix = .avro
+httptoavro.sinks.sink1.hdfs.rollCount = 0
+httptoavro.sinks.sink1.hdfs.batchSize = 1000
+httptoavro.sinks.sink1.hdfs.rollInterval = 30
+httptoavro.sinks.sink1.hdfs.rollSize = 0
+httptoavro.sinks.sink1.hdfs.fileType = DataStream
+httptoavro.sinks.sink1.hdfs.timeZone = Europe/Moscow
+httptoavro.sinks.sink1.hdfs.maxOpenFiles = 1
+httptoavro.sinks.sink1.serializer = avro_event
