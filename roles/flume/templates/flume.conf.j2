@@ -10,7 +10,7 @@ httptoavro.sinks    = sink1
 # For each source, channel, and sink, set
 # standard properties.
 httptoavro.sources.source1.type     = http
-httptoavro.sources.source1.bind     = localhost
+httptoavro.sources.source1.bind     = 0.0.0.0
 httptoavro.sources.source1.port     = 9999
 httptoavro.sources.source1.channels = channel1
 httptoavro.sources.source1.deserializer.schemaType = LITERAL
@@ -23,7 +23,7 @@ httptoavro.sinks.sink1.hdfs.path = /user/flume/weblogs
 httptoavro.sinks.sink1.hdfs.inUsePrefix = .
 httptoavro.sinks.sink1.hdfs.fileSuffix = .avro
 httptoavro.sinks.sink1.hdfs.rollCount = 0
-httptoavro.sinks.sink1.hdfs.batchSize = 1000
+httptoavro.sinks.sink1.hdfs.batchSize = 100
 httptoavro.sinks.sink1.hdfs.rollInterval = 30
 httptoavro.sinks.sink1.hdfs.rollSize = 0
 httptoavro.sinks.sink1.hdfs.fileType = DataStream
