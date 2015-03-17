@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+  sudo: True
+  vars:
+    uname: ambari
+  tasks:
+    - name: Create User
+      user: name={{ uname }} generate_ssh_key=yes force=yes groups="sudo,admin" shell=/bin/bash
+
+    - name: Make it Sudoer
+      action: 'shell echo {{ uname }}  ALL=NOPASSWD: ALL >> /etc/sudoers'
+
+    - name: Fetch keys
+      fetch: src=/home/{{ uname }}/.ssh/id_rsa.pub dest=/tmp/fetched/{{ uname }}/{{ inventory_hostname }}/id_rsa.pub flat=yes
+
+    - name: Adding SSH keys
+      authorized_key: user={{ uname }} state=present key="{{ lookup('file', '/tmp/fetched/'+ uname +'/'+ item +'/id_rsa.pub') }}"
+      with_items: groups.all
+
+

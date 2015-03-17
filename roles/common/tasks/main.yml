@@ -9,3 +9,4 @@
     - wget
     - curl
     - python-software-properties
+    - chkconfig

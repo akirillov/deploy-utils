@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  base_box = "trusty64"
+
+  masters = [:master0,:master1,:master2]
+  k = 0
+  masters.each_with_index do |node, index|
+    config.vm.define node do |node|
+      ip = k + index
+      node.vm.box = base_box
+      node.vm.network :private_network, ip: "192.168.11.10#{ip}"
+      node.vm.hostname = "master-#{index}"
+      node.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "2048"]
+      end
+    end
+  end
+
+  nodes = [:node0,:node1]
+  i = 110
+  nodes.each_with_index do |node, index|
+    config.vm.define node do |node|
+      ip = i + index
+      node.vm.box = base_box
+      node.vm.network :private_network, ip: "192.168.11.#{ip}"
+      node.vm.hostname = "node-#{index}"
+      node.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "3072"]
+      end
+    end
+  end
+
+  config.vm.define "flume" do |flume|
+    flume.vm.box = base_box
+    flume.vm.network :private_network, ip: "192.168.100.100"
+    flume.vm.hostname = "flume-test"
+    flume.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "2048"]
+    end
+  end
+
+end

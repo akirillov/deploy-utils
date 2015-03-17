@@ -15,18 +15,28 @@ httptoavro.sources.source1.port     = 9999
 httptoavro.sources.source1.channels = channel1
 httptoavro.sources.source1.deserializer.schemaType = LITERAL
 httptoavro.channels.channel1.type   = memory
-httptoavro.channels.channel1.capacity = 10000
+httptoavro.channels.channel1.transactionCapacity = 10000
+httptoavro.channels.channel1.capacity = 1000000
 
 httptoavro.sinks.sink1.type = hdfs
 httptoavro.sinks.sink1.channel = channel1
 httptoavro.sinks.sink1.hdfs.path = /user/flume/weblogs
 httptoavro.sinks.sink1.hdfs.inUsePrefix = .
+httptoavro.sinks.sink1.hdfs.filePrefix = weblog
 httptoavro.sinks.sink1.hdfs.fileSuffix = .avro
+
 httptoavro.sinks.sink1.hdfs.rollCount = 0
-httptoavro.sinks.sink1.hdfs.batchSize = 100
-httptoavro.sinks.sink1.hdfs.rollInterval = 30
-httptoavro.sinks.sink1.hdfs.rollSize = 0
+httptoavro.sinks.sink1.hdfs.rollInterval = 0
+httptoavro.sinks.sink1.hdfs.batchSize = 5000
+#somehow value 20645000 bytes (?) in Flume represents ~64Mb
+httptoavro.sinks.sink1.hdfs.rollSize = 20645000
+
+# -- Compression codec. one of following : gzip, bzip2, lzo, snappy
+# hdfs.codeC = gzip
+#format: currently SequenceFile, DataStream or CompressedStream
+#(1)DataStream will not compress output file and please don't set codeC
+#(2)CompressedStream requires set hdfs.codeC with an available codeC
 httptoavro.sinks.sink1.hdfs.fileType = DataStream
+
 httptoavro.sinks.sink1.hdfs.timeZone = Europe/Moscow
-httptoavro.sinks.sink1.hdfs.maxOpenFiles = 1
 httptoavro.sinks.sink1.serializer = avro_event

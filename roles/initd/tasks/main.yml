@@ -6,3 +6,4 @@
 
 - name: Starting service
   service: name={{ service_name }} state=started
+
